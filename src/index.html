@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+	<link rel="stylesheet" type="text/css" href="styles/main.css">
+    <script src="lib/system.js"></script>
+    <script>
+        System.config({
+            baseURL: '',
+            paths: {
+                'traceur': 'lib/traceur.min.js',
+                'vue': 'lib/vue.min.js',
+                'director': 'lib/director.min.js',
+                'http': 'lib/http.js'
+            },
+			map: {
+				'html': 'lib/text'
+			}
+        });
+        System.import('main');
+    </script>
+</head>
+<body id="main">
+
+</body>
+</html>

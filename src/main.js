@@ -45,58 +45,58 @@ var vm = new Vue({
             console.log(e);
             switch(code(e)) {
                 case 90:
-                    keys.setInGain(0, 1);
+                    keys.setInGain(0, .5);
                     break;
                 case 83:
-                    keys.setInGain(1, 1);
+                    keys.setInGain(1, .5);
                     break;
                 case 88:
-                    keys.setInGain(2, 1);
+                    keys.setInGain(2, .5);
                     break;
                 case 68:
-                    keys.setInGain(3, 1);
+                    keys.setInGain(3, .5);
                     break;
                 case 67:
-                    keys.setInGain(4, 1);
+                    keys.setInGain(4, .5);
                     break;
                 case 86:
-                    keys.setInGain(5, 1);
+                    keys.setInGain(5, .5);
                     break;
                 case 71:
-                    keys.setInGain(6, 1);
+                    keys.setInGain(6, .5);
                     break;
                 case 66:
-                    keys.setInGain(7, 1);
+                    keys.setInGain(7, .5);
                     break;
                 case 72:
-                    keys.setInGain(8, 1);
+                    keys.setInGain(8, .5);
                     break;
                 case 78:
-                    keys.setInGain(9, 1);
+                    keys.setInGain(9, .5);
                     break;
                 case 74:
-                    keys.setInGain(10, 1);
+                    keys.setInGain(10, .5);
                     break;
                 case 77:
-                    keys.setInGain(11, 1);
+                    keys.setInGain(11, .5);
                     break;
                 case 188:
-                    keys.setInGain(12, 1);
+                    keys.setInGain(12, .5);
                     break;
                 case 76:
-                    keys.setInGain(13, 1);
+                    keys.setInGain(13, .5);
                     break;
                 case 190:
-                    keys.setInGain(14, 1);
+                    keys.setInGain(14, .5);
                     break;
                 case 190:
-                    keys.setInGain(15, 1);
+                    keys.setInGain(15, .5);
                     break;
                 case 186:
-                    keys.setInGain(16, 1);
+                    keys.setInGain(16, .5);
                     break;
                 case 191:
-                    keys.setInGain(17, 1);
+                    keys.setInGain(17, .5);
                     break;
             }
         };

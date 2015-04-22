@@ -28,11 +28,7 @@ var keys = new Mixer([
         NOTES.G5,
         NOTES.Ab5,
         NOTES.A6
-    ].map(note => new Mixer([
-			new Oscillator('sine', note*0.5),
-            new Oscillator('sawtooth', note)
-        ])),
-    OUT);
+    ].map(note => new Oscillator('sawtooth', note)), OUT);
 keys.setAllInGain(0);
 keys.setOutGain(0.5);
 
@@ -42,7 +38,6 @@ var vm = new Vue({
     },
     ready: function() {
         document.onkeydown = function(e){
-            console.log(e);
             switch(code(e)) {
                 case 90:
                     keys.setInGain(0, .5);
@@ -89,14 +84,11 @@ var vm = new Vue({
                 case 190:
                     keys.setInGain(14, .5);
                     break;
-                case 190:
+                case 186:
                     keys.setInGain(15, .5);
                     break;
-                case 186:
-                    keys.setInGain(16, .5);
-                    break;
                 case 191:
-                    keys.setInGain(17, .5);
+                    keys.setInGain(16, .5);
                     break;
             }
         };
@@ -147,14 +139,11 @@ var vm = new Vue({
                 case 190:
                     keys.setInGain(14, 0);
                     break;
-                case 190:
+                case 186:
                     keys.setInGain(15, 0);
                     break;
-                case 186:
-                    keys.setInGain(16, 0);
-                    break;
                 case 191:
-                    keys.setInGain(17, 0);
+                    keys.setInGain(16, 0);
                     break;
             }
         };

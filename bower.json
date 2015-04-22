@@ -15,7 +15,6 @@
     "es6-module-loader": "~0.16.4",
     "traceur": "~0.0.87",
     "vue": "~0.11.5",
-    "director": "~1.2.8",
     "bourbon": "~4.2.2",
     "plugin-text": "https://github.com/systemjs/plugin-text.git#~0.0.2"
   }

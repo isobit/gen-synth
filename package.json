@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": ["Josh Glendenning", "Sam Dobs"],
+  "author": [
+    "Josh Glendenning",
+    "Sam Dobs"
+  ],
   "license": "ISC",
   "devDependencies": {
     "del": "^1.1.1",
@@ -17,5 +20,8 @@
     "gulp-sourcemaps": "^1.5.1",
     "run-sequence": "^1.0.2",
     "yargs": "^3.7.0"
+  },
+  "dependencies": {
+    "gulp-changed": "^1.2.1"
   }
 }

@@ -1,5 +1,7 @@
 @import '../../bower_components/bourbon/app/assets/stylesheets/bourbon';
 
+@import 'animations';
+
 * {
 	box-sizing: border-box;
 	margin: 0;
@@ -8,12 +10,4 @@
 
 [v-cloak] {
   visibility: hidden;
-}
-
-* {
-	transition: opacity 0.33s ease;
-}
-
-.fade-enter, .fade-leave {
-	opacity: 0;
 }

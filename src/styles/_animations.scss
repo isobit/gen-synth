@@ -1,0 +1,7 @@
+* {
+  transition: opacity 0.33s ease;
+}
+
+.fade-enter, .fade-leave {
+  opacity: 0;
+}

@@ -30,11 +30,7 @@ export class KeyboardPiano {
             NOTES.D5,
             NOTES.Eb5,
             NOTES.E5,
-            NOTES.F5,
-            NOTES.Gb5,
-            NOTES.G5,
-            NOTES.Ab5,
-            NOTES.A6
+            NOTES.F5
             ].map((note) => generator(note)));
         this.signalMixer.setAllInGain(0);
         this.signalMixer.setOutGain(0.5);

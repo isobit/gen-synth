@@ -10,11 +10,8 @@ export class Oscillator {
         this.node = audioCtx.createOscillator();
         this.setType(type);
         this.setFreq(freq);
-
         this.frequency = this.node.frequency;
-
         this.node.start();
-
         if (dest) this.connect(dest);
     }
     connect(dest) {
@@ -35,10 +32,8 @@ export class Gain {
         dest = null
     ) {
         this.node = audioCtx.createGain();
-        this.setGain(gain);
-
         this.gain = this.node.gain;
-
+        this.setGain(gain);
         source.connect(this.node);
         if (dest) this.connect(dest);
     }
@@ -50,20 +45,42 @@ export class Gain {
     }
 }
 
-export class LFO {
+export class Delay {
+    constructor(
+        source,
+        delay = 0.0,
+        dest = null
+    ) {
+        this.node = audioCtx.createDelay();
+        this.delay = this.node.delayTime;
+        this.setDelay(delay);
+        source.connect(this.node);
+        if (dest) this.connect(dest);
+    }
+    connect(dest) {
+        this.node.connect(dest);
+    }
+    setDelay(delay) {
+        this.node.delayTime.value = delay;
+        console.log(`Delay = ${this.node.delayTime.value}`);
+    }
+}
+
+export class Modulator {
     constructor(
         type = 'sine',
         freq = 1,
         gain = 1,
+        delay = 0,
         dest = null
     ) {
         this.oscNode = new Oscillator(type, freq);
-        this.gainNode = new Gain(this.oscNode, gain);
-
+        this.delayNode = new Delay(this.oscNode, delay);
+        this.gainNode = new Gain(this.delayNode, gain);
         this.frequency = this.oscNode.node.frequency;
-        this.type = this.oscNode.node.type;
-        this.gain = this.gainNode.node.gain;
-
+        this.type = this.oscNode.type;
+        this.delay = this.delayNode.delay;
+        this.gain = this.gainNode.gain;
         if (dest) this.connect(dest);
     }
     connect(dest) {
@@ -74,6 +91,9 @@ export class LFO {
     }
     setFreq(freq) {
         this.oscNode.setFreq(freq);
+    }
+    setDelay(delay) {
+        this.delayNode.setDelay(delay);
     }
     setGain(gain) {
         this.gainNode.setGain(gain);
@@ -86,7 +106,6 @@ export class Compressor {
         dest = null
     ) {
         this.node = audioCtx.createDynamicsCompressor();
-
         source.connect(this.node);
         if (dest) this.connect(dest);
     }
@@ -101,13 +120,14 @@ export class Mixer {
         dest = null
     ) {
         this.outNode = audioCtx.createGain();
-        this.gain = this.outNode.gain;
+        this.outGain = this.outNode.gain;
         this.inNodes = channels.map(ch => {
             let g = audioCtx.createGain();
             ch.connect(g);
             g.connect(this.outNode);
             return g;
         });
+        this.inGain = this.inNodes.map(node => node.gain);
         if (dest) this.connect(dest);
     }
     connect(dest) {
@@ -138,10 +158,8 @@ export class StereoPanner {
         dest = null
     ) {
         this.node = audioCtx.createStereoPanner();
-        this.setPan(pan);
-
         this.pan = this.node.pan;
-
+        this.setPan(pan);
         source.connect(this.node);
         if (dest) this.connect(dest);
     }

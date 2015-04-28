@@ -10,9 +10,12 @@ export class Oscillator {
         this.node = audioCtx.createOscillator();
         this.setType(type);
         this.setFreq(freq);
-        this.node.start();
-        if (dest) this.connect(dest);
+
         this.frequency = this.node.frequency;
+
+        this.node.start();
+
+        if (dest) this.connect(dest);
     }
     connect(dest) {
         this.node.connect(dest);
@@ -22,6 +25,73 @@ export class Oscillator {
     }
     setFreq(freq) {
         this.node.frequency.value = freq;
+    }
+}
+
+export class Gain {
+    constructor(
+        source,
+        gain = 1,
+        dest = null
+    ) {
+        this.node = audioCtx.createGain();
+        this.setGain(gain);
+
+        this.gain = this.node.gain;
+
+        source.connect(this.node);
+        if (dest) this.connect(dest);
+    }
+    connect(dest) {
+        this.node.connect(dest);
+    }
+    setGain(gain) {
+        this.node.gain.value = gain;
+    }
+}
+
+export class LFO {
+    constructor(
+        type = 'sine',
+        freq = 1,
+        gain = 1,
+        dest = null
+    ) {
+        this.oscNode = new Oscillator(type, freq);
+        this.gainNode = new Gain(this.oscNode, gain);
+
+        this.frequency = this.oscNode.node.frequency;
+        this.type = this.oscNode.node.type;
+        this.gain = this.gainNode.node.gain;
+
+        if (dest) this.connect(dest);
+    }
+    connect(dest) {
+        this.gainNode.connect(dest);
+    }
+    setType(type) {
+        this.oscNode.setType(type);
+    }
+    setFreq(freq) {
+        this.oscNode.setFreq(freq);
+    }
+    setGain(gain) {
+        this.gainNode.setGain(gain);
+    }
+}
+
+export class Compressor {
+    constructor(
+        source,
+        dest = null
+    ) {
+        this.node = audioCtx.createDynamicsCompressor();
+
+        source.connect(this.node);
+        if (dest) this.connect(dest);
+    }
+    connect(dest) {
+        this.node.connect(dest);
     }
 }
 
@@ -58,5 +128,27 @@ export class Mixer {
     }
     unmute() {
         this.setOutGain(this.mutedGain || 0);
+    }
+}
+
+export class StereoPanner {
+    constructor(
+        source,
+        pan = 0,
+        dest = null
+    ) {
+        this.node = audioCtx.createStereoPanner();
+        this.setPan(pan);
+
+        this.pan = this.node.pan;
+
+        source.connect(this.node);
+        if (dest) this.connect(dest);
+    }
+    connect(dest) {
+        this.node.connect(dest);
+    }
+    setPan(pan) {
+        this.node.pan.value = pan;
     }
 }

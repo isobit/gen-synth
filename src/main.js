@@ -40,36 +40,37 @@ class Synth {
         this.carrier.connect(dest);
     }
     set(params) {
-        params.forEach(f => {
-            switch (f.key) {
+        Object.keys(params).forEach(key => {
+			let value = params[key];
+            switch (key) {
                 case 'modFreqFactor':
-                    this.modulator.setFreq(f.value * this.note);
+                    this.modulator.setFreq(value * this.note);
                     break;
                 case 'modDelay':
-                    this.modulator.setDelay(f.value);
+                    this.modulator.setDelay(value);
                     break;
                 case 'modGain':
-                    this.modulator.setGain(f.value);
+                    this.modulator.setGain(value);
                     break;
 
                 case 'modFreqFactor2':
-                    this.modulator2.setFreq(f.value * this.note);
+                    this.modulator2.setFreq(value * this.note);
                     break;
                 case 'modDelay2':
-                    this.modulator2.setDelay(f.value);
+                    this.modulator2.setDelay(value);
                     break;
                 case 'modGain2':
-                    this.modulator2.setGain(f.value);
+                    this.modulator2.setGain(value);
                     break;
 
                 case 'sinMix':
-                    this.carrier.setInGain(0, f.value);
+                    this.carrier.setInGain(0, value);
                     break;
                 case 'sawMix':
-                    this.carrier.setInGain(1, f.value);
+                    this.carrier.setInGain(1, value);
                     break;
                 case 'sqrMix':
-                    this.carrier.setInGain(2, f.value);
+                    this.carrier.setInGain(2, value);
                     break;
             }
         });
@@ -84,6 +85,26 @@ function renderSynthOffline(note, params, length = 0.02) {
 }
 
 var keySynths = [];
+
+function paramsToEntity(params) {
+	return Object.keys(params).reduce(
+		(prev, cur) => {
+			prev[cur] = params[cur].value;
+			return prev;
+		}, 
+		{}
+	);
+}
+
+function entityToParams(entity) {
+	return Object.keys(entity).reduce(
+		(prev, cur) => {
+			prev[cur] = {value: entity[cur], gene: synthGenome.genes[cur]};
+			return prev;
+		},
+		{}
+	);
+}
 
 var vm = new Vue({
     el: '#main',
@@ -104,25 +125,21 @@ var vm = new Vue({
         document.onkeydown = (e) => keys.keyDown(e);
         document.onkeyup   = (e) => keys.keyUp(e);
 
-        this.$watch('params', this.updateSynth, true, true);
-        this.$watch('graphLength', this.drawWaveform);
+		this.$watch('params', this.updateSynth, true, true);
+		this.$watch('graphLength', this.drawWaveform);
     },
     methods: {
         updateSynth(params) {
-            keySynths.forEach(s => s.set(params.map(a => a.value.value)));
+            keySynths.forEach(s => s.set(paramsToEntity(params)));
             this.drawWaveform();
         },
         randomize() {
-            this.params = synthGenome.generate().map(a => {
-                return {
-                    value: a.value,
-                    gene: synthGenome.genes[a.key]
-                };
-            });
-        },
+            this.params = entityToParams(synthGenome.generate());
+		},
         mutate() {
             let n = Math.randomIntInRange(1, 4);
-            synthGenome.mutate(this.params.map(a => a.value.value), n).forEach(a => this.params[a.key].value = a.value);
+			console.log(`Mutating ${n} params`);
+            this.params = entityToParams(synthGenome.mutate(paramsToEntity(this.params), n));
         },
         drawWaveform() {
             let canvas = this.$$.waveformCanvas;
@@ -132,7 +149,7 @@ var vm = new Vue({
             ctx.lineWidth = 2;
             ctx.strokeStyle = 'rgb(80, 150, 250)';
             ctx.beginPath();
-            renderSynthOffline(440, this.params.map(a => a.value.value), this.graphLength).then(buffer => {
+            renderSynthOffline(440, paramsToEntity(this.params), this.graphLength).then(buffer => {
                 let data = buffer.getChannelData(0);
                 let sliceWidth = canvas.width * 1.0 / data.length;
                 var x = 0;

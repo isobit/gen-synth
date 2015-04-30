@@ -42,7 +42,8 @@ var paths = {
             'traceur/traceur.min*',
             'system.js/dist/system.js*',
             'plugin-text/text.js',
-            'vue/dist/vue.min*'
+            'vue/dist/*'
+            //'vue/dist/vue.min*'
         ],
         jsDest: path.join(destDir, 'lib'),
         assetDeps: [

@@ -56,6 +56,7 @@ export class Genome {
         return params;
     }
     mutate(entity, n) {
+		console.log(`Mutating ${n}`);
         let e = Object.clone(entity);
         let keys = Object.keys(e);
         while (n > 0 && keys.length > 0) {

@@ -9,8 +9,8 @@ function keycode(e) {
 export class KeyboardPiano {
     constructor(
         generator,
-        compress = true,
-        dest = null
+        octave = 0,
+        compress = true
     ) {
         this.signalMixer = new Mixer([
             NOTES.C4,
@@ -31,14 +31,13 @@ export class KeyboardPiano {
             NOTES.Eb5,
             NOTES.E5,
             NOTES.F5
-            ].map((note) => generator(note)));
+            ].map(note => generator(note * Math.pow(2, octave))));
         this.signalMixer.setAllInGain(0);
         this.signalMixer.setOutGain(0.5);
         if (compress)
             this.outNode = new Compressor(this.signalMixer);
         else
             this.outNode = this.signalMixer;
-        if (dest) this.connect(dest);
     }
 
     connect(dest) {

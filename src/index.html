@@ -21,18 +21,28 @@
     </script>
 </head>
 <body id="main" v-cloak>
+
     <pre>
  s d   g h j   l ;
 z x c v b n m , . /
 	</pre>
-    <pre>{{params | json 4}}</pre>
 
-    <input type="range" min="0" max="1" step="0.1" v-model="params.modFreqFactor"><br>
-    <input type="range" min="0" max="1" step="0.1" v-model="params.modGainFactor"><br>
-    <input type="range" min="0" max="1" step="0.1" v-model="params.modDelayFactor"><br>
+    <div v-repeat="params">
+        <pre>{{$key}} = {{value}}</pre>
+        <input type="range"
+               v-attr="min: gene.min, max: gene.max, step: gene.step"
+               v-model="value"
+               style="width: 250px"
+               debounce="10"
+               number>
+        <br><br>
+    </div>
 
-    <input type="range" min="0" max="1" step="0.1" v-model="params.sinMix"><br>
-    <input type="range" min="0" max="1" step="0.1" v-model="params.sawMix"><br>
-    <input type="range" min="0" max="1" step="0.1" v-model="params.sqrMix"><br>
+    <canvas v-el="waveformCanvas" width="500" height="100"></canvas><br>
+    <input type="range" min="0.001" max="0.1" step="0.001" v-model="graphLength" debounce="20">
+
+    <button v-on="click: randomize">Randomize</button>
+    <button v-on="click: mutate">Mutate</button>
+    <button v-on="click: drawWaveform">Draw</button>
 </body>
 </html>

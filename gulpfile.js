@@ -42,8 +42,7 @@ var paths = {
             'traceur/traceur.min*',
             'system.js/dist/system.js*',
             'plugin-text/text.js',
-            'vue/dist/*'
-            //'vue/dist/vue.min*'
+            'vue/dist/vue.min*'
         ],
         jsDest: path.join(destDir, 'lib'),
         assetDeps: [
@@ -77,7 +76,8 @@ gulp.task('serve', ['build'], function() {
         .pipe(server({
             livereload: true,
             directoryListing: false,
-            open: false
+            open: false,
+            port: 8000
         }));
 });
 

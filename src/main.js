@@ -15,7 +15,8 @@ export function setKeySynth(entity) {
 var vm = new Vue({
     el: '#main',
     data: {
-        graphLength: 0.02,
+        graphLength: 0.1,
+        graphNote: 440,
         entities: Array.apply(null, new Array(6)).map(() => {
             return {entity: synthGenome.generate(), persist: false};
         })
@@ -32,15 +33,14 @@ var vm = new Vue({
     },
     methods: {
         nextGeneration() {
-            let survivors = this.entities.reduce((prev, cur) => {
+            let newGen = this.entities.reduce((prev, cur) => {
                 if (cur.persist) prev.push(cur.entity);
                 return prev;
             }, []);
-            let newGeneration = [];
-            survivors.forEach(s => newGeneration.push(s));
-            while (newGeneration.length < 6)
-                newGeneration.push(synthGenome.mutate(survivors.random(), Math.randomIntInRange(1, 4)));
-            this.entities = newGeneration.map(e => {
+            while (newGen.length < 6)
+                newGen.push(synthGenome.generate());
+
+            this.entities = newGen.map(e => {
                 return {entity: e, persist: false}
             });
         }

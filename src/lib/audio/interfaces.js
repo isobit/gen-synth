@@ -1,3 +1,4 @@
+import {audioCtx} from './context';
 import {Mixer, Compressor} from './components';
 import {NOTES} from './notes'
 
@@ -10,32 +11,36 @@ export class KeyboardPiano {
     constructor(
         generator,
         octave = 0,
-        compress = true
+        compress = true,
+        ctx = audioCtx
     ) {
-        this.signalMixer = new Mixer([
-            NOTES.C4,
-            NOTES.Db4,
-            NOTES.D4,
-            NOTES.Eb4,
-            NOTES.E4,
-            NOTES.F4,
-            NOTES.Gb4,
-            NOTES.G4,
-            NOTES.Ab4,
-            NOTES.A5,
-            NOTES.Bb5,
-            NOTES.B5,
-            NOTES.C5,
-            NOTES.Db5,
-            NOTES.D5,
-            NOTES.Eb5,
-            NOTES.E5,
-            NOTES.F5
-            ].map(note => generator(note * Math.pow(2, octave))));
+        this.signalMixer = new Mixer(
+            [
+                NOTES.C4,
+                NOTES.Db4,
+                NOTES.D4,
+                NOTES.Eb4,
+                NOTES.E4,
+                NOTES.F4,
+                NOTES.Gb4,
+                NOTES.G4,
+                NOTES.Ab4,
+                NOTES.A5,
+                NOTES.Bb5,
+                NOTES.B5,
+                NOTES.C5,
+                NOTES.Db5,
+                NOTES.D5,
+                NOTES.Eb5,
+                NOTES.E5,
+                NOTES.F5
+            ].map(note => generator(note * Math.pow(2, octave))),
+            ctx
+        );
         this.signalMixer.setAllInGain(0);
         this.signalMixer.setOutGain(0.5);
         if (compress)
-            this.outNode = new Compressor(this.signalMixer);
+            this.outNode = new Compressor(this.signalMixer, ctx);
         else
             this.outNode = this.signalMixer;
     }

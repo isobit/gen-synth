@@ -1,0 +1,38 @@
+* {
+  transition: opacity 0.33s ease; }
+
+.fade-enter, .fade-leave {
+  opacity: 0; }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0; }
+
+[v-cloak] {
+  visibility: hidden; }
+
+body {
+  background: #333;
+  color: white; }
+
+button {
+  padding: 20px;
+  font-size: 40px; }
+
+.center {
+  width: 100%;
+  text-align: center; }
+
+.entity {
+  width: 50%;
+  float: left;
+  text-align: center;
+  padding: 1em; }
+
+.entity.active {
+  background-color: #FFF; }
+
+
+
+/*# sourceMappingURL=maps/main.css.map */

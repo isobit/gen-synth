@@ -10,7 +10,6 @@ import 'components/synth-view';
 const Settings = {
     ENTITY_COUNT: 6,
     KEEP_FITTEST: true,
-    CROSSOVER_COUNT: 1,
     MUTATION_COUNT: 2,
     MUTATION_AMOUNT: 5
 };
@@ -36,33 +35,38 @@ var vm = new Vue({
             prev.sort((a, b) =>
                 Number.parseInt(a.fitness) < Number.parseInt(b.fitness)
             );
-            prev = prev.map(e => e.genotype);
 
             let next = [];
 
             // Keep fittest
-            if (Settings.KEEP_FITTEST) {
-                next.push(prev[0]);
+            if (Settings.KEEP_FITTEST && prev[0].fitness > 0) {
+                next.push(prev[0].genotype);
             }
 
             // Crossover
-            let crossoverPool = prev;
-            crossoverPool.splice(0, 1);
-            for (let i = 0; i < Settings.CROSSOVER_COUNT && crossoverPool.length > 0; i++) {
-                let choice1 = Math.randomIntInRange(0, 2);
-                let choice2 = Math.randomIntInRange(0, Math.ceil(crossoverPool.length/2));
-                next = next.concat(synthGenome.crossover([
-                    [prev[0], prev[1]][choice1],
-                    crossoverPool.splice(choice2, 1)[0]
-                ]));
-            }
+            //let crossoverPool = prev;
+            //crossoverPool.splice(0, 1);
+            //for (let i = 0; i < Settings.CROSSOVER_COUNT && crossoverPool.length > 0; i++) {
+                //let choice1 = Math.randomIntInRange(0, 2);
+                //let choice2 = Math.randomIntInRange(0, Math.ceil(crossoverPool.length/2));
+                //next = next.concat(synthGenome.crossover([
+                    //[prev[0], prev[1]][choice1],
+                    //crossoverPool.splice(choice2, 1)[0]
+                //]));
+            //}
+			if (prev[0].fitness > 0 && prev[1].fitness > 0) {
+				next = next.concat(synthGenome.crossover([
+					prev[0].genotype,
+					prev[1].genotype
+				]));
+			}
 
             // Mutation
             let mutationPool = prev;
             for (let i = 0; i < Settings.MUTATION_COUNT && mutationPool.length > 0; i++) {
-                let choice = Math.randomIntInRange(0, Math.ceil(mutationPool.length/2));
+                let choice = Math.randomIntInRange(0, mutationPool.length);
                 next.push(synthGenome.mutate(
-                    mutationPool.splice(choice, 1)[0],
+                    mutationPool.splice(choice, 1)[0].genotype,
                     Settings.MUTATION_AMOUNT
                 ));
             }

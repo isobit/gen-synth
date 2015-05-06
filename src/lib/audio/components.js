@@ -190,40 +190,40 @@ export class StereoPanner {
     //}
 //}
 
-export class BitCrusher {
-    constructor(
-        source,
-        bits = 4,       // between 1 and 16
-        normFreq = 0.5, // between 0.0 and 1.0
-        ctx = audioCtx
-    ) {
-        let bufferSize = 256;
-        let step = Math.pow(0.5, bits);
-        let phaser = 0;
-        let last = 0;
-        this.node = ctx.createScriptProcessor(bufferSize, 1, 1);
-        this.node.onaudioprocess = function(e) {
-            let inputBuffer = e.inputBuffer;
-            let outputBuffer = e.outputBuffer;
-            for (let ch = 0; ch < outputBuffer.numberOfChannels; ch++) {
-                let input = inputBuffer.getChannelData(ch);
-                let output = outputBuffer.getChannelData(ch);
-                for (let i = 0; i < inputBuffer.length; i++) {
-                    phaser += normFreq;
-                    if (phaser >= 1.0) {
-                        phaser -= 1.0;
-                        last = step * Math.floor(input[i] / step + 0.5);
-                    }
-                    output[i] = last;
-                }
-            }
-        };
-        source.connect(this.node);
-    }
-    connect(dest) {
-        this.node.connect(dest);
-    }
-}
+//export class BitCrusher {
+    //constructor(
+        //source,
+        //bits = 4,       // between 1 and 16
+        //normFreq = 0.5, // between 0.0 and 1.0
+        //ctx = audioCtx
+    //) {
+        //let bufferSize = 256;
+        //let step = Math.pow(0.5, bits);
+        //let phaser = 0;
+        //let last = 0;
+        //this.node = ctx.createScriptProcessor(bufferSize, 1, 1);
+        //this.node.onaudioprocess = function(e) {
+            //let inputBuffer = e.inputBuffer;
+            //let outputBuffer = e.outputBuffer;
+            //for (let ch = 0; ch < outputBuffer.numberOfChannels; ch++) {
+                //let input = inputBuffer.getChannelData(ch);
+                //let output = outputBuffer.getChannelData(ch);
+                //for (let i = 0; i < inputBuffer.length; i++) {
+                    //phaser += normFreq;
+                    //if (phaser >= 1.0) {
+                        //phaser -= 1.0;
+                        //last = step * Math.floor(input[i] / step + 0.5);
+                    //}
+                    //output[i] = last;
+                //}
+            //}
+        //};
+        //source.connect(this.node);
+    //}
+    //connect(dest) {
+        //this.node.connect(dest);
+    //}
+//}
 
 //export class NoiseConvolver {
     //constructor(

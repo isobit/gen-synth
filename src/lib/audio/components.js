@@ -7,6 +7,7 @@ export class Oscillator {
         freq = NOTES.A4,
         ctx = audioCtx
     ) {
+		console.log(ctx);
         this.node = ctx.createOscillator();
         this.setType(type);
         this.setFreq(freq);

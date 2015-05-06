@@ -12,7 +12,8 @@ import {
 import {Genome, Gene, SelectorGene, UniformFloatGene} from 'lib/genetics';
 
 export var synthGenome = new Genome({
-    mod1FreqFactor: new UniformFloatGene(1.0, 1.0, 0),
+    //mod1FreqFactor: new UniformFloatGene(1.0, 1.0, 0),
+    mod1FreqFactor: new UniformFloatGene(0.975, 1.025, 0.005),
     mod1Delay: new UniformFloatGene(0, 0.01, 0.0001),
     mod1Gain: new UniformFloatGene(0, 400, 10),
 
@@ -34,29 +35,35 @@ export var synthGenome = new Genome({
     triDelay: new UniformFloatGene(0, 0.01, 0.0001)
 });
 
+const STEROPANNER_ENABLED = false;
+
 export class Synth {
 	constructor(note, params = null, ctx = audioCtx) {
 		this.note = note;
 		this.panMod = new Modulator('sine', undefined, 0, undefined, ctx);
 		this.modulator1 = new Modulator('sine', undefined, 0, undefined, ctx);
 		this.modulator2 = new Modulator('sine', undefined, 0, undefined, ctx);
-        this.oscillators = [
-            new Oscillator('sine', note, ctx),
-            new Oscillator('sawtooth', note, ctx),
-            new Oscillator('square', note, ctx),
-            new Oscillator('triangle', note, ctx)
-        ]
-            .map(o => {
-                this.modulator1.connect(o.frequency);
-                this.modulator2.connect(o.frequency);
-                return o;
-            })
-            .map(o => {
-                return new Delay(o, undefined, ctx);
-            });
+		this.oscillators = [
+			new Oscillator('sine', note, ctx),
+			new Oscillator('sawtooth', note, ctx),
+			new Oscillator('square', note, ctx),
+			new Oscillator('triangle', note, ctx)
+		]
+			.map(o => {
+				this.modulator1.connect(o.frequency);
+				this.modulator2.connect(o.frequency);
+				return o;
+			})
+			.map(o => {
+				return new Delay(o, undefined, ctx);
+			});
 		this.carrier = new Mixer(this.oscillators, ctx);
-		this.node = new StereoPanner(this.carrier, 0, ctx);
-        this.panMod.connect(this.node.pan);
+		if (STEROPANNER_ENABLED) {
+			this.node = new StereoPanner(this.carrier, 0, ctx);
+			this.panMod.connect(this.node.pan);
+		} else {
+			this.node = this.carrier;
+		}
 		if (params) this.set(params);
 	}
 	connect(dest) {
@@ -96,27 +103,27 @@ export class Synth {
 				case 'sinMix':
 					this.carrier.setInGain(0, value);
 					break;
-                case 'sinDelay':
-                    this.oscillators[0].setDelay(value);
-                    break;
+				case 'sinDelay':
+					this.oscillators[0].setDelay(value);
+					break;
 				case 'sawMix':
 					this.carrier.setInGain(1, value);
 					break;
-                case 'sawDelay':
-                    this.oscillators[1].setDelay(value);
-                    break;
+				case 'sawDelay':
+					this.oscillators[1].setDelay(value);
+					break;
 				case 'sqrMix':
 					this.carrier.setInGain(2, value);
 					break;
-                case 'sqrDelay':
-                    this.oscillators[2].setDelay(value);
-                    break;
+				case 'sqrDelay':
+					this.oscillators[2].setDelay(value);
+					break;
 				case 'triMix':
 					this.carrier.setInGain(3, value);
 					break;
-                case 'triDelay':
-                    this.oscillators[3].setDelay(value);
-                    break;
+				case 'triDelay':
+					this.oscillators[3].setDelay(value);
+					break;
 			}
 		});
 		this.carrier.setOutGain(
@@ -126,17 +133,17 @@ export class Synth {
 }
 
 //export class Synth {
-    //constructor(note, params = null, ctx = audioCtx) {
-        //this.note = note;
-        //this.node = new Oscillator('triangle', note, ctx);
-        ////this.node = new BitCrusher(this.carrier, 4, 0.5, ctx);
-        //if (params) this.set(params);
-    //}
-    //connect(dest) {
-        //this.node.connect(dest);
-    //}
-    //set(params) {
-    //}
+	//constructor(note, params = null, ctx = audioCtx) {
+		//this.note = note;
+		//this.node = new Oscillator('triangle', note, ctx);
+		////this.node = new BitCrusher(this.carrier, 4, 0.5, ctx);
+		//if (params) this.set(params);
+	//}
+	//connect(dest) {
+		//this.node.connect(dest);
+	//}
+	//set(params) {
+	//}
 	//stop() {
 		//this.node.stop();
 	//}
@@ -144,12 +151,12 @@ export class Synth {
 
 export function renderSynthOffline(
     note, params,
-    {length = 0.02, sampleRate = 5000, channels = 1} = {}
+    {length = 0.02, sampleRate = 44100, channels = 1} = {}
 ) {
-    var ctx = new OfflineAudioContext(channels, sampleRate * length, sampleRate);
-    var synth = new Synth(note, params, ctx);
-    synth.connect(ctx.destination);
-    return ctx.startRendering();
+	let ctx = new OfflineAudioContext(channels, sampleRate * length, sampleRate);
+	let synth = new Synth(note, params, ctx);
+	synth.connect(ctx.destination);
+	return ctx.startRendering();
 }
 
 //var real = [0];

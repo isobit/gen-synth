@@ -14,7 +14,8 @@ var gulp        = require('gulp'),
     sass        = require('gulp-ruby-sass'),
     sourcemaps  = require('gulp-sourcemaps'),
     changed     = require('gulp-changed'),
-    runSequence = require('run-sequence');
+    runSequence = require('run-sequence'),
+    deploy      = require('gulp-gh-pages');
 
 /*------------------------
  Environment
@@ -76,9 +77,13 @@ gulp.task('serve', ['build'], function() {
         .pipe(server({
             livereload: true,
             directoryListing: false,
-            open: false,
-            port: 8000
+            open: false
         }));
+});
+
+gulp.task('deploy', ['build'], function() {
+    return gulp.src(path.join(destDir, '/**/*'))
+        .pipe(deploy());
 });
 
 gulp.task('styles', ['bower'], function() {

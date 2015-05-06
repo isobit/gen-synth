@@ -1,9 +1,8 @@
-import 'lib/util';
 import Vue from 'vue';
 import {OUT} from 'lib/audio/context';
 import {synthGenome, Synth} from 'synth';
-import {BitCrusher} from 'lib/audio/components';
 import {KeyboardPiano} from 'lib/audio/interfaces';
+import 'lib/util';
 
 import 'components/synth-view';
 
@@ -19,7 +18,7 @@ var keySynths = [];
 var vm = new Vue({
     el: '#main',
     data: {
-        graphLength: 0.1,
+        graphLength: 0.01,
         graphNote: 440,
         activeEntity: 0,
         entities: Array.apply(null, new Array(Settings.ENTITY_COUNT)).map(() => {
@@ -44,16 +43,6 @@ var vm = new Vue({
             }
 
             // Crossover
-            //let crossoverPool = prev;
-            //crossoverPool.splice(0, 1);
-            //for (let i = 0; i < Settings.CROSSOVER_COUNT && crossoverPool.length > 0; i++) {
-                //let choice1 = Math.randomIntInRange(0, 2);
-                //let choice2 = Math.randomIntInRange(0, Math.ceil(crossoverPool.length/2));
-                //next = next.concat(synthGenome.crossover([
-                    //[prev[0], prev[1]][choice1],
-                    //crossoverPool.splice(choice2, 1)[0]
-                //]));
-            //}
 			if (prev[0].fitness > 0 && prev[1].fitness > 0) {
 				next = next.concat(synthGenome.crossover([
 					prev[0].genotype,
@@ -82,13 +71,6 @@ var vm = new Vue({
                     fitness: 0
                 };
             });
-
-            //this.entities = Array.apply(null, new Array(Settings.ENTITY_COUNT)).map(() => {
-            //    return {
-            //        genotype: synthGenome.generate(),
-            //        fitness: 0
-            //    };
-            //});
 
             this.selectEntity(0);
         },

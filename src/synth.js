@@ -13,33 +13,134 @@ import {Genome, Gene, SelectorGene, UniformFloatGene} from 'lib/genetics';
 
 export var synthGenome = new Genome({
     mod1FreqFactor: new UniformFloatGene(1.0, 1.0, 0),
-    mod1Delay: new UniformFloatGene(0, 0.001, 0.0001),
+    mod1Delay: new UniformFloatGene(0, 0.01, 0.0001),
     mod1Gain: new UniformFloatGene(0, 400, 10),
 
-    mod2FreqFactor: new UniformFloatGene(1.0, 1.0, 0),
-    mod2Delay: new UniformFloatGene(0, 0.001, 0.0001),
+    //mod2FreqFactor: new SelectorGene([3/5,2/3,3/4,1/2,1,2], 1),
+    mod2FreqFactor: new UniformFloatGene(0.975, 1.025, 0.005),
+    mod2Delay: new UniformFloatGene(0, 0.01, 0.0001),
     mod2Gain: new UniformFloatGene(0, 400, 10),
 
+	panGain: new UniformFloatGene(0, 0.5, 0.1),
+	panFreq: new UniformFloatGene(0, 10, 0.5),
+
     sinMix: new UniformFloatGene(0, 1, 0.1),
+    sinDelay: new UniformFloatGene(0, 0.01, 0.0001),
     sawMix: new UniformFloatGene(0, 1, 0.1),
+    sawDelay: new UniformFloatGene(0, 0.001, 0.0001),
     sqrMix: new UniformFloatGene(0, 1, 0.1),
-    custMix: new UniformFloatGene(0, 0, 0.1)
+    sqrDelay: new UniformFloatGene(0, 0.01, 0.0001),
+    triMix: new UniformFloatGene(0, 1, 0.1),
+    triDelay: new UniformFloatGene(0, 0.01, 0.0001)
 });
 
 export class Synth {
-    constructor(note, params = null, ctx = audioCtx) {
-        this.note = note;
-        this.carrier = new Oscillator('sine', note, ctx);
-        this.node = this.carrier;
-        //this.node = new BitCrusher(this.carrier, 4, 0.5, ctx);
-        if (params) this.set(params);
-    }
-    connect(dest) {
-        this.node.connect(dest);
-    }
-    set(params) {
-    }
+	constructor(note, params = null, ctx = audioCtx) {
+		this.note = note;
+		this.panMod = new Modulator('sine', undefined, 0, undefined, ctx);
+		this.modulator1 = new Modulator('sine', undefined, 0, undefined, ctx);
+		this.modulator2 = new Modulator('sine', undefined, 0, undefined, ctx);
+        this.oscillators = [
+            new Oscillator('sine', note, ctx),
+            new Oscillator('sawtooth', note, ctx),
+            new Oscillator('square', note, ctx),
+            new Oscillator('triangle', note, ctx)
+        ]
+            .map(o => {
+                this.modulator1.connect(o.frequency);
+                this.modulator2.connect(o.frequency);
+                return o;
+            })
+            .map(o => {
+                return new Delay(o, undefined, ctx);
+            });
+		this.carrier = new Mixer(this.oscillators, ctx);
+		this.node = new StereoPanner(this.carrier, 0, ctx);
+        this.panMod.connect(this.node.pan);
+		if (params) this.set(params);
+	}
+	connect(dest) {
+		this.node.connect(dest);
+	}
+	set(params) {
+		Object.keys(params).forEach(key => {
+			let value = params[key];
+			switch (key) {
+				case 'mod1FreqFactor':
+					this.modulator1.setFreq(value * this.note);
+					break;
+				case 'mod1Delay':
+					this.modulator1.setDelay(value);
+					break;
+				case 'mod1Gain':
+					this.modulator1.setGain(value);
+					break;
+
+				case 'mod2FreqFactor':
+					this.modulator2.setFreq(value * this.note);
+					break;
+				case 'mod2Delay':
+					this.modulator2.setDelay(value);
+					break;
+				case 'mod2Gain':
+					this.modulator2.setGain(value);
+					break;
+
+				case 'panFreq':
+					this.panMod.setFreq(value);
+					break;
+				case 'panGain':
+					this.panMod.setGain(value);
+					break;
+
+				case 'sinMix':
+					this.carrier.setInGain(0, value);
+					break;
+                case 'sinDelay':
+                    this.oscillators[0].setDelay(value);
+                    break;
+				case 'sawMix':
+					this.carrier.setInGain(1, value);
+					break;
+                case 'sawDelay':
+                    this.oscillators[1].setDelay(value);
+                    break;
+				case 'sqrMix':
+					this.carrier.setInGain(2, value);
+					break;
+                case 'sqrDelay':
+                    this.oscillators[2].setDelay(value);
+                    break;
+				case 'triMix':
+					this.carrier.setInGain(3, value);
+					break;
+                case 'triDelay':
+                    this.oscillators[3].setDelay(value);
+                    break;
+			}
+		});
+		this.carrier.setOutGain(
+			1 / (params.sinMix + params.sawMix + params.sqrMix + params.triMix)
+		);
+	}
 }
+
+//export class Synth {
+    //constructor(note, params = null, ctx = audioCtx) {
+        //this.note = note;
+        //this.node = new Oscillator('triangle', note, ctx);
+        ////this.node = new BitCrusher(this.carrier, 4, 0.5, ctx);
+        //if (params) this.set(params);
+    //}
+    //connect(dest) {
+        //this.node.connect(dest);
+    //}
+    //set(params) {
+    //}
+	//stop() {
+		//this.node.stop();
+	//}
+//}
 
 export function renderSynthOffline(
     note, params,

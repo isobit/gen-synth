@@ -11,3 +11,30 @@
 [v-cloak] {
   visibility: hidden;
 }
+
+body {
+  background: #333;
+  color: white;
+}
+
+button {
+  padding: 20px;
+  font-size: 40px;
+}
+
+.center {
+  width: 100%;
+  text-align: center;
+}
+
+.entity {
+  width: 50%;
+  float: left;
+  text-align: center;
+  padding: 1em;
+}
+
+.entity.active {
+//  background-color: #00AA55;
+  background-color: #FFF;
+}

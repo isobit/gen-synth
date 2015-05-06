@@ -7,7 +7,6 @@ export class Oscillator {
         freq = NOTES.A4,
         ctx = audioCtx
     ) {
-		console.log(ctx);
         this.node = ctx.createOscillator();
         this.setType(type);
         this.setFreq(freq);
@@ -151,45 +150,45 @@ export class Mixer {
 }
 
 export class StereoPanner {
-    constructor(
-        source,
-        pan = 0,
-        ctx = audioCtx
-    ) {
-        this.node = ctx.createStereoPanner();
-        this.pan = this.node.pan;
-        this.setPan(pan);
-        source.connect(this.node);
-    }
-    connect(dest) {
-        this.node.connect(dest);
-    }
-    setPan(pan) {
-        this.node.pan.value = pan;
-    }
+	constructor(
+		source,
+		pan = 0,
+		ctx = audioCtx
+	) {
+		this.node = ctx.createStereoPanner();
+		this.pan = this.node.pan;
+		this.setPan(pan);
+		source.connect(this.node);
+	}
+	connect(dest) {
+		this.node.connect(dest);
+	}
+	setPan(pan) {
+		this.node.pan.value = pan;
+	}
 }
 
-export class CustomOscillator {
-    constructor(
-        real = [],
-        imaginary = [],
-        freq = NOTES.A4,
-        ctx = audioCtx
-    ) {
-        this.node = ctx.createOscillator();
-        let periodicWave = ctx.createPeriodicWave(new Float32Array(real), new Float32Array(imaginary));
-        this.node.setPeriodicWave(periodicWave);
-        this.setFreq(freq);
-        this.frequency = this.node.frequency;
-        this.node.start();
-    }
-    connect(dest) {
-        this.node.connect(dest);
-    }
-    setFreq(freq) {
-        this.node.frequency.value = freq;
-    }
-}
+//export class CustomOscillator {
+    //constructor(
+        //real = [],
+        //imaginary = [],
+        //freq = NOTES.A4,
+        //ctx = audioCtx
+    //) {
+        //this.node = ctx.createOscillator();
+        //let periodicWave = ctx.createPeriodicWave(new Float32Array(real), new Float32Array(imaginary));
+        //this.node.setPeriodicWave(periodicWave);
+        //this.setFreq(freq);
+        //this.frequency = this.node.frequency;
+        //this.node.start();
+    //}
+    //connect(dest) {
+        //this.node.connect(dest);
+    //}
+    //setFreq(freq) {
+        //this.node.frequency.value = freq;
+    //}
+//}
 
 export class BitCrusher {
     constructor(
@@ -226,23 +225,23 @@ export class BitCrusher {
     }
 }
 
-export class NoiseConvolver {
-    constructor(
-        source,
-        ctx = audioCtx
-    ) {
-        this.node = ctx.createConvolver();
-        let noiseBuffer = ctx.createBuffer(2, 0.5 * ctx.sampleRate, ctx.sampleRate);
-        let left = noiseBuffer.getChannelData(0);
-        let right = noiseBuffer.getChannelData(1);
-        for (let i = 0; i < noiseBuffer.length; i++) {
-            left[i] = Math.random() * 2 - 1;
-            right[i] = Math.random() * 2 - 1;
-        }
-        this.node.buffer = noiseBuffer;
-        source.connect(this.node);
-    }
-    connect(dest) {
-        this.node.connect(dest);
-    }
-}
+//export class NoiseConvolver {
+    //constructor(
+        //source,
+        //ctx = audioCtx
+    //) {
+        //this.node = ctx.createConvolver();
+        //let noiseBuffer = ctx.createBuffer(2, 0.5 * ctx.sampleRate, ctx.sampleRate);
+        //let left = noiseBuffer.getChannelData(0);
+        //let right = noiseBuffer.getChannelData(1);
+        //for (let i = 0; i < noiseBuffer.length; i++) {
+            //left[i] = Math.random() * 2 - 1;
+            //right[i] = Math.random() * 2 - 1;
+        //}
+        //this.node.buffer = noiseBuffer;
+        //source.connect(this.node);
+    //}
+    //connect(dest) {
+        //this.node.connect(dest);
+    //}
+//}

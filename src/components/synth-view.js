@@ -33,55 +33,48 @@ Vue.component('synth-view', {
     data() { return {
         graphLength: 0.02,
         graphNote: 440,
-        persist: false,
-        entity: synthGenome.generate()
+        params: null
     }},
     methods: {
-        select() {
-            setKeySynth(this.entity);
-        },
         drawWaveform() {
-            renderSynthOffline(this.graphNote, this.entity, {length: this.graphLength}).then(buffer => {
-                var ctx = this.waveformCanvas.ctx;
-                var width = this.waveformCanvas.width;
-                var height = this.waveformCanvas.height;
+            if (this.params) renderSynthOffline(
+                this.graphNote,
+                this.params,
+                {length: this.graphLength}
+            ).then(buffer => {
+                    var ctx = this.waveformCanvas.ctx;
+                    var width = this.waveformCanvas.width;
+                    var height = this.waveformCanvas.height;
 
-                var data = buffer.getChannelData(0);
-                var xRatio = width / (data.length-1);
-                var dataMax = (function() {
-                    let acc = 0;
-                    for (let i = 0; i < data.length; i++)
-                        acc = Math.max(acc, Math.abs(data[i]));
-                    return acc;
-                }());
+                    var data = buffer.getChannelData(0);
+                    var xRatio = width / (data.length-1);
+                    var dataMax = (function() {
+                        let acc = 0;
+                        for (let i = 0; i < data.length; i++)
+                            acc = Math.max(acc, Math.abs(data[i]));
+                        return acc;
+                    }());
 
-                ctx.fillStyle = 'rgb(50, 50, 50)';
-                ctx.fillRect(0, 0, width, height);
-                ctx.lineWidth = 1.5;
-                ctx.strokeStyle = 'rgb(80, 150, 250)';
-                ctx.moveTo(0, height*0.5);
-                ctx.beginPath();
-                for (let i = 0; i < data.length; i++) {
-                    let [x, y] = [i * xRatio, ((data[i]/dataMax+1)*0.5)*height];
-                    ctx.lineTo(x, y);
-                }
-                ctx.stroke();
-            });
-        }
-    },
-    watch: {
-        graphNote(g) {
-            this.drawWaveform();
-        },
-        graphLength(g) {
-            this.drawWaveform();
-        },
-        entity(e) {
-            this.drawWaveform();
+                    //ctx.fillStyle = 'rgb(50, 50, 50)';
+                    //ctx.fillRect(0, 0, width, height);
+                    ctx.clearRect(0, 0, width, height);
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeStyle = 'rgb(80, 150, 250)';
+                    ctx.moveTo(0, height*0.5);
+                    ctx.beginPath();
+                    for (let i = 0; i < data.length; i++) {
+                        let [x, y] = [i * xRatio, ((data[i]/dataMax+1)*0.5)*height];
+                        ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                });
         }
     },
     ready() {
         this.waveformCanvas = new CustomCanvas(this.$$.waveformCanvas);
         this.drawWaveform();
+        ['params', 'graphNote', 'graphLength'].forEach(f => {
+            this.$watch(f, this.drawWaveform, true, false);
+        });
     }
 });

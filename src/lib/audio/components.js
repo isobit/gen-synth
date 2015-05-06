@@ -3,6 +3,7 @@ import {NOTES} from './notes'
 
 var audioCtx = new AudioContext();
 var OUT = audioCtx.destination;
+window.osc = [];
 
 export class Oscillator {
     constructor(
@@ -10,12 +11,12 @@ export class Oscillator {
         freq = NOTES.A4,
         ctx = audioCtx
     ) {
-		console.log(ctx);
         this.node = ctx.createOscillator();
         this.setType(type);
         this.setFreq(freq);
         this.frequency = this.node.frequency;
         this.node.start();
+		window.osc.push(this.node);
     }
     connect(dest) {
         this.node.connect(dest);

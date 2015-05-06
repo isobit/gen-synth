@@ -22,6 +22,7 @@
     "yargs": "^3.7.0"
   },
   "dependencies": {
-    "gulp-changed": "^1.2.1"
+    "gulp-changed": "^1.2.1",
+    "gulp-gh-pages": "^0.5.1"
   }
 }

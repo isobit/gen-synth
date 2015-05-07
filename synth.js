@@ -15,12 +15,12 @@ export var synthGenome = new Genome({
     //mod1FreqFactor: new UniformFloatGene(1.0, 1.0, 0),
     mod1FreqFactor: new UniformFloatGene(0.975, 1.025, 0.005),
     mod1Delay: new UniformFloatGene(0, 0.01, 0.0001),
-    mod1Gain: new UniformFloatGene(0, 400, 10),
+    mod1Gain: new UniformFloatGene(0, 400, 15),
 
     //mod2FreqFactor: new SelectorGene([3/5,2/3,3/4,1/2,1,2], 1),
     mod2FreqFactor: new UniformFloatGene(0.975, 1.025, 0.005),
     mod2Delay: new UniformFloatGene(0, 0.01, 0.0001),
-    mod2Gain: new UniformFloatGene(0, 400, 10),
+    mod2Gain: new UniformFloatGene(0, 400, 15),
 
 	panGain: new UniformFloatGene(0, 0.5, 0.1),
 	panFreq: new UniformFloatGene(0, 10, 0.5),

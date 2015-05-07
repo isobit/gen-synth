@@ -7,10 +7,10 @@ import 'lib/util';
 import 'components/synth-view';
 
 const Settings = {
-    ENTITY_COUNT: 6,
+    ENTITY_COUNT: 8,
     KEEP_FITTEST: true,
-    MUTATION_COUNT: 2,
-    MUTATION_AMOUNT: 5
+    RANDOM_COUNT: 2,
+    MUTATION_AMOUNT: 7
 };
 
 var keySynths = [];
@@ -20,6 +20,7 @@ var vm = new Vue({
     data: {
         graphLength: 0.01,
         graphNote: 440,
+		count: 0,
         activeEntity: 0,
         entities: Array.apply(null, new Array(Settings.ENTITY_COUNT)).map(() => {
             return {
@@ -36,26 +37,31 @@ var vm = new Vue({
             );
 
             let next = [];
+            let mutationPool = prev
+				.filter(e => e.fitness > 0)
+				.map(e => e.genotype);
 
             // Keep fittest
             if (Settings.KEEP_FITTEST && prev[0].fitness > 0) {
                 next.push(prev[0].genotype);
             }
 
-            // Crossover
+            // Crossover (breed the top two)
 			if (prev[0].fitness > 0 && prev[1].fitness > 0) {
-				next = next.concat(synthGenome.crossover([
+				let children = synthGenome.crossover([
 					prev[0].genotype,
 					prev[1].genotype
-				]));
+				]);
+				next = next.concat(children);
+				mutationPool = mutationPool.concat(children);
 			}
 
             // Mutation
-            let mutationPool = prev;
-            for (let i = 0; i < Settings.MUTATION_COUNT && mutationPool.length > 0; i++) {
+            while (next.length < Settings.ENTITY_COUNT - Settings.RANDOM_COUNT 
+				   && mutationPool.length > 0) {
                 let choice = Math.randomIntInRange(0, mutationPool.length);
                 next.push(synthGenome.mutate(
-                    mutationPool.splice(choice, 1)[0].genotype,
+                    mutationPool[choice],
                     Settings.MUTATION_AMOUNT
                 ));
             }
@@ -72,6 +78,7 @@ var vm = new Vue({
                 };
             });
 
+			this.count++;
             this.selectEntity(0);
         },
         selectEntity(i) {

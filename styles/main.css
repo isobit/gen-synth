@@ -36,7 +36,8 @@ button {
   width: 50%;
   float: left;
   text-align: center;
-  padding: 1em; }
+  padding: 1em;
+  color: #AAA; }
 
 .entity.active {
   background-color: #FFF; }

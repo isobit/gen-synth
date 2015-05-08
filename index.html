@@ -40,8 +40,8 @@ z x c v b n m , . /
     <div v-repeat="entity: entities" v-on="click: selectEntity($index)" v-class="active: activeEntity === $index"
          class="entity">
         <synth-view v-with="graphLength: graphLength, graphNote: graphNote, params: entity.genotype"></synth-view>
-        <input type="radio" v-repeat="5" v-attr="value: $index" v-model="entity.fitness"><br>
-        <!--<pre>{{entity | json 4}}</pre>-->
+		Rating:
+        0 <input type="radio" v-repeat="5" v-attr="value: $index" v-model="entity.fitness"> 5
     </div>
 </body>
 </html>
